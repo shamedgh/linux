@@ -128,6 +128,7 @@ struct notification {
 struct seccomp_filter {
 	refcount_t usage;
 	bool log;
+    u64 syscall_mask[2][6];
 	struct seccomp_filter *prev;
 	struct bpf_prog *prog;
 	struct notification *notif;
@@ -178,6 +179,8 @@ static int seccomp_check_filter(struct sock_filter *filter, unsigned int flen)
 		struct sock_filter *ftest = &filter[pc];
 		u16 code = ftest->code;
 		u32 k = ftest->k;
+
+        printk(KERN_INFO "Hamed seccomp_check_filter iterating over filter, code: %hu k: %u", code, k);
 
 		switch (code) {
 		case BPF_LD | BPF_W | BPF_ABS:
